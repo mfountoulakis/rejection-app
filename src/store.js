@@ -1,12 +1,7 @@
 import logger from 'redux-logger';
-
-import { applyMiddleware, createStore } from 'redux';
+import { applyMiddleware, createStore, combineReducers } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import { loadState, saveState } from './lib/localStorage';
-
-import { reducer } from './features/questions/questions-reducer';
-import throttle from 'lodash/throttle';
-
+import { reducer as questionsReducer } from './features/questions/questions-reducer';
 import rootSaga from './features/questions/questions-saga';
 
 const bindMiddleware = middleware => {
@@ -17,25 +12,15 @@ const bindMiddleware = middleware => {
   return applyMiddleware(...middleware);
 };
 
-const persistedState = loadState();
-
-function configureStore() {
+export function configureStore() {
   const sagaMiddleware = createSagaMiddleware();
   const middlewares = [sagaMiddleware, logger];
   const store = createStore(
-    reducer,
-    persistedState,
+    combineReducers({ questions: questionsReducer }),
     bindMiddleware([...middlewares])
   );
 
   store.sagaTask = sagaMiddleware.run(rootSaga);
-
-  store.subscribe(
-    throttle(() => {
-      //leave the questions key out for now
-      saveState(store.getState());
-    }, 1000)
-  );
 
   return store;
 }
