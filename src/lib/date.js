@@ -1,9 +1,8 @@
-export const isToday = d => {
-  const today = new Date();
+export const getDate = d => compareDate => {
   const date = new Date(d);
   return (
-    date.getDate() == today.getDate() &&
-    date.getMonth() == today.getMonth() &&
-    date.getFullYear() == today.getFullYear()
+    date.getDate() == compareDate.getDate() &&
+    date.getMonth() == compareDate.getMonth() &&
+    date.getFullYear() == compareDate.getFullYear()
   );
 };

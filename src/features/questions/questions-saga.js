@@ -1,30 +1,32 @@
 import { all, put, takeEvery, call } from 'redux-saga/effects';
-import { loadQuestions, saveQuestions } from '../../lib/localStorage';
+import { loadState, saveState } from '../../lib/localStorage';
 import {
   questionsReceived,
   fetchQuestions,
-  getQuestionsList,
   updateStatus,
   createQuestion,
   questionSuccess,
   questionError,
-  reportSaveQuestionsError
+  reportsaveStateError,
+  toggleDarkMode,
+  getState,
+  toggleDarkModeSuccess
 } from './questions-reducer';
 import { select } from 'redux-saga/effects';
 
 export function* handleCreateQuestion() {
   try {
-    const questions = yield select(getQuestionsList);
-    yield call(saveQuestions, questions);
+    const questions = yield select(getState);
+    yield call(saveState, questions);
     yield put(questionSuccess());
   } catch (error) {
-    yield put(reportSaveQuestionsError(error));
+    yield put(reportsaveStateError(error));
   }
 }
 
 export function* handleFetchQuestions() {
   try {
-    const questions = yield call(loadQuestions);
+    const questions = yield call(loadState);
     yield put(questionsReceived(questions));
   } catch (error) {
     yield put(questionError(error));
@@ -33,13 +35,26 @@ export function* handleFetchQuestions() {
 
 export function* handleUpdateQuestion() {
   try {
-    const questions = yield select(getQuestionsList);
-    yield call(saveQuestions, questions);
+    const state = yield select(getState);
+    yield call(saveState, state);
     yield put(questionSuccess());
   } catch (error) {
-    yield put(reportSaveQuestionsError(error));
+    yield put(reportsaveStateError(error));
   }
 }
+
+export function* handleToggleDarkMode() {
+  try {
+    //save the entire serialized state
+    const state = yield select(getState);
+    yield call(saveState, state);
+    yield put(toggleDarkModeSuccess());
+  } catch (error) {
+    yield put(reportsaveStateError(error));
+  }
+}
+
+//handle filter
 
 export function* watchUpdateQuestion() {
   yield takeEvery(updateStatus().type, handleUpdateQuestion);
@@ -53,8 +68,13 @@ export function* watchFetchQuestions() {
   yield takeEvery(fetchQuestions().type, handleFetchQuestions);
 }
 
+export function* watchToggleDarkMode() {
+  yield takeEvery(toggleDarkMode().type, handleToggleDarkMode);
+}
+
 export default function* rootSaga() {
   yield all([
+    watchToggleDarkMode(),
     watchCreateQuestion(),
     watchFetchQuestions(),
     watchUpdateQuestion()

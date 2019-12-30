@@ -2,14 +2,42 @@ import React, { useState } from 'react';
 import t from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import { makeStyles } from '@material-ui/core/styles';
+import { useRouter } from 'next/router';
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    '& .MuiTextField-root': {
+      margin: theme.spacing(1),
+      display: 'flex'
+    },
+    '& .MuiButton-root': {
+      margin: theme.spacing(1)
+    }
+  },
+
+  paper: {
+    padding: theme.spacing(1),
+    height: '100%',
+    position: 'fixed',
+    overflow: 'hidden',
+    width: '100%'
+  }
+}));
 
 const QuestionForm = ({ createQuestion }) => {
-  const [questionInput, setQuestion] = useState(undefined);
-  const [askeeInput, setAskee] = useState(undefined);
+  const classes = useStyles();
+
+  const [questionInput, setQuestion] = useState();
+  const [askeeInput, setAskee] = useState();
+  const router = useRouter();
 
   const handleSubmit = e => {
     e.preventDefault();
     createQuestion({ question: questionInput, askee: askeeInput });
+    //for now push to index route
+    router.push(`/`);
   };
 
   const setter = set => e => {
@@ -19,21 +47,33 @@ const QuestionForm = ({ createQuestion }) => {
   };
 
   return (
-    <Paper style={{ padding: 20 }}>
-      <form onSubmit={handleSubmit}>
+    <Paper className={classes.paper}>
+      <form
+        className={classes.root}
+        noValidate
+        autoComplete="off"
+        onSubmit={handleSubmit}
+      >
         <TextField
-          onChange={setter(setAskee)}
-          value={askeeInput}
-          fullWidth
+          id="standard-multiline-flexible"
           label="Askee"
+          value={askeeInput}
+          onChange={setter(setAskee)}
+          variant="outlined"
         />
+
         <TextField
-          onChange={setter(setQuestion)}
-          value={questionInput}
-          fullWidth
+          id="outlined-multiline-static"
           label="Question"
+          multiline
+          rows="20"
+          variant="outlined"
+          value={questionInput}
+          onChange={setter(setQuestion)}
         />
-        <button type="submit">Submit Question</button>
+        <Button variant="contained" color="primary" type="submit">
+          Submit
+        </Button>
       </form>
     </Paper>
   );

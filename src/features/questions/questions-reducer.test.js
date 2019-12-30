@@ -1,12 +1,94 @@
 import { describe } from 'riteway';
 
-import { reducer, createQuestion, updateStatus } from './questions-reducer.js';
+import {
+  reducer,
+  createQuestion,
+  updateStatus,
+  calculateTotals,
+  getQuestionsObj,
+  toggleDarkMode,
+  getState,
+  filterQuestions,
+  getQuestions
+} from './questions-reducer.js';
+// import { getDate } from '../../lib/date.js';
 
 //basic react hook, why react? advantage of hooks over classbased components...
 // It's fine for this to know the state shape.
-const createState = ({ byId = {} } = {}) => ({
-  byId
+const createState = ({
+  questions = { filterBy: 'all', byId: {}, darkMode: true }
+} = {}) => ({
+  questions
 });
+
+//SELECTORS----------------------------------//
+
+describe('calculateTotals()', async assert => {
+  const questions = [
+    {
+      question: 'can I have a raise',
+      askee: 'my boss',
+      status: 'accepted',
+      id: '123',
+      timestamp: 1574543711293
+    },
+    {
+      question: 'can I have a raise',
+      askee: 'my boss',
+      status: 'unanswered',
+      id: '124',
+      timestamp: 1574543711293
+    }
+  ];
+
+  const state = questions.map(createQuestion).reduce(reducer, reducer());
+
+  assert({
+    given: 'the state',
+    should: 'calculate the total score',
+    actual: calculateTotals(state),
+    expected: 1
+  });
+});
+
+describe('getQuestions()', async assert => {
+  const questions = [
+    {
+      question: 'can I have a raise',
+      askee: 'my boss',
+      status: 'accepted',
+      id: '123',
+      timestamp: 1574543711293
+    },
+    {
+      question: 'can I have a raise',
+      askee: 'my boss',
+      status: 'unanswered',
+      id: '124',
+      timestamp: 1574543711293
+    }
+  ];
+
+  const state = questions.map(createQuestion).reduce(reducer, reducer());
+
+  assert({
+    given: 'the state',
+    should: 'calculate the total score',
+    actual: getQuestions(state).length,
+    expected: 2
+  });
+
+  const filterState = reducer(state, filterQuestions('accepted'));
+
+  assert({
+    given: 'the state with filterBy prop',
+    should: 'calculate the total score',
+    actual: getQuestions(filterState).length,
+    expected: 1
+  });
+});
+
+//--------------------------------------//
 
 describe('questions reducer', async assert => {
   assert({
@@ -40,7 +122,7 @@ describe('questions received', async assert => {
   assert({
     given: 'an array of questions',
     should: 'return the array of question-objects keyed by id',
-    actual: state.byId,
+    actual: getQuestionsObj(state),
     expected: {
       '123': {
         question: 'can I have a raise',
@@ -74,7 +156,7 @@ describe('create question', async assert => {
   assert({
     given: 'a question',
     should: 'add the question to state',
-    actual: state.byId,
+    actual: getQuestionsObj(state),
     expected: { [question.id]: question }
   });
 });
@@ -93,7 +175,9 @@ describe('update question status', async assert => {
   assert({
     given: 'a question that has been accepted',
     should: 'update the question status to accepted',
-    actual: reducer(initialState, updateStatus(question.id, 'accepted')).byId,
+    actual: getQuestionsObj(
+      reducer(initialState, updateStatus(question.id, 'accepted'))
+    ),
     expected: {
       123: {
         askee: 'my boss',
@@ -103,5 +187,26 @@ describe('update question status', async assert => {
         id: '123'
       }
     }
+  });
+});
+
+describe('toggleDarkMode()', async assert => {
+  const state = reducer(reducer(), toggleDarkMode());
+  assert({
+    given: 'darkMode has been toggled from true to false',
+    should: 'update darkMode property to false',
+    actual: getState(state).darkMode,
+    expected: false
+  });
+});
+
+describe('filterQuestions()', async assert => {
+  const state = reducer(reducer(), filterQuestions('unanswered'));
+
+  assert({
+    given: 'it is called with an argument',
+    should: 'update filterBy prop with argument',
+    actual: getState(state).filterBy,
+    expected: 'unanswered'
   });
 });

@@ -1,64 +1,49 @@
 import React from 'react';
 import { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import List from '@material-ui/core/List';
-
+import TableContainer from '@material-ui/core/TableContainer';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 import Question from './question-component';
 
-import {
-  ListItem,
-  ListItemAvatar,
-  ListSubheader,
-  Avatar
-} from '@material-ui/core';
-// import Divider from '@material-ui/core/Divider';
-
-import { makeStyles } from '@material-ui/core/styles';
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    width: '100%',
-    // backgroundColor: 'theme.palette.background,'
-    position: 'relative',
-    overflow: 'auto',
-    maxHeight: '90%'
-  },
-  subheader: {
-    backgroundColor: 'green'
-  },
-  listSection: {
-    backgroundColor: theme.palette.background.paper
-  },
-  ul: {
-    backgroundColor: 'inherit',
-    padding: 10
-  }
-}));
-const Questions = ({ fetchQuestions, today }) => {
-  const classes = useStyles();
-
+const Questions = ({ fetchQuestions, score, questions, updateStatus } = {}) => {
   useEffect(() => {
     fetchQuestions();
   }, [fetchQuestions]);
 
   return (
-    <>
-      <List className={classes.root} subheader={<li />}>
-        <li key={`section-${1}`} className={classes.listSection}>
-          <ul className={classes.ul}>
-            <ListSubheader>Today</ListSubheader>
-            {today.map(q => (
-              <ListItem button key={q.id}>
-                <ListItemAvatar>
-                  <Avatar alt="Profile Picture" />
-                </ListItemAvatar>
-                <Question props={q} />
-              </ListItem>
-            ))}
-          </ul>
-        </li>
-      </List>
-    </>
+    <TableContainer component={Paper}>
+      <Table aria-label="simple table">
+        <caption className={'questions-total-score'}>
+          Total Score: {score}
+        </caption>
+
+        <TableHead>
+          <TableRow>
+            <TableCell align="left">From</TableCell>
+            <TableCell align="right">Askee</TableCell>
+            <TableCell align="right">Question</TableCell>
+            <TableCell align="right">Status</TableCell>
+            <TableCell align="right">Date Created</TableCell>
+          </TableRow>
+        </TableHead>
+
+        <TableBody>
+          {questions.map(q => (
+            <TableRow className="question-row" key={q.id}>
+              <Question
+                {...q}
+                updateStatus={(id, status) => updateStatus(id, status)}
+              />
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 
@@ -66,7 +51,10 @@ Questions.propTypes = {
   today: PropTypes.arrayOf(PropTypes.object),
   questions: PropTypes.array,
   fetchQuestions: PropTypes.func,
-  createQuestion: PropTypes.func
+  createQuestion: PropTypes.func,
+  updateStatus: PropTypes.func,
+  score: PropTypes.number,
+  id: PropTypes.string
 };
 
 export default Questions;

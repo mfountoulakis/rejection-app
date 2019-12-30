@@ -20,6 +20,11 @@ import PropTypes from 'prop-types';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import { useRouter } from 'next/router';
+import Button from '@material-ui/core/Button';
+import Switch from '@material-ui/core/Switch';
+
+import WbSunnyIcon from '@material-ui/icons/WbSunny';
+import Brightness3Icon from '@material-ui/icons/Brightness3';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -41,6 +46,9 @@ const useStyles = makeStyles(theme => ({
   toolbar: theme.mixins.toolbar,
   margin: {
     margin: theme.spacing(1)
+  },
+  title: {
+    flexGrow: 1
   }
 }));
 
@@ -50,7 +58,7 @@ const Layout = Component => props => {
 
   const theme = createMuiTheme({
     palette: {
-      type: 'dark'
+      type: props.darkMode ? 'dark' : 'light'
     }
   });
 
@@ -66,9 +74,16 @@ const Layout = Component => props => {
         <CssBaseline />
         <AppBar position="fixed" className={classes.appBar}>
           <Toolbar>
-            <Typography variant="h6" noWrap>
+            <Typography variant="h6" noWrap className={classes.title}>
               Rejection App
             </Typography>
+            {props.darkMode ? <Brightness3Icon /> : <WbSunnyIcon />}
+            <Switch
+              label="Small"
+              checked={props.darkMode}
+              onChange={() => props.toggleDarkMode()}
+            />
+            <Button color="inherit">Login</Button>
           </Toolbar>
         </AppBar>
         <Drawer
@@ -91,7 +106,13 @@ const Layout = Component => props => {
               </Fab>
             </ListItem>
             {['Questions'].map(text => (
-              <ListItem button key={text}>
+              <ListItem
+                button
+                key={text}
+                onClick={() => {
+                  router.push('/'), props.filterQuestions('all');
+                }}
+              >
                 <ListItemText primary={text} />
               </ListItem>
             ))}
@@ -99,7 +120,11 @@ const Layout = Component => props => {
           <Divider />
           <List>
             {['Accepted', 'Rejected', 'Unanswered'].map(text => (
-              <ListItem button key={text}>
+              <ListItem
+                button
+                key={text}
+                onClick={() => props.filterQuestions(text)}
+              >
                 <ListItemIcon>{iconOpts[text]}</ListItemIcon>
                 <ListItemText primary={text} />
               </ListItem>
@@ -116,7 +141,9 @@ const Layout = Component => props => {
 };
 
 Layout.propTypes = {
-  Component: PropTypes.object
+  Component: PropTypes.object,
+  filterQuestions: PropTypes.func,
+  toggleTheme: PropTypes.func
 };
 
 export default Layout;

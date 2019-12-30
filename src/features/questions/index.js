@@ -7,18 +7,24 @@ import {
   createQuestion,
   fetchQuestions,
   getQuestions,
-  getTodaysQuestions
+  updateStatus,
+  calculateTotals,
+  toggleTheme
 } from './questions-reducer';
 
 const mapStateToProps = state => {
-  return { questions: getQuestions(state), today: getTodaysQuestions(state) };
+  return {
+    questions: getQuestions(state),
+    score: calculateTotals(state)
+  };
 };
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       createQuestion,
-      fetchQuestions
+      fetchQuestions,
+      updateStatus
     },
     dispatch
   );

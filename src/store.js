@@ -15,10 +15,7 @@ const bindMiddleware = middleware => {
 export function configureStore() {
   const sagaMiddleware = createSagaMiddleware();
   const middlewares = [sagaMiddleware, logger];
-  const store = createStore(
-    combineReducers({ questions: questionsReducer }),
-    bindMiddleware([...middlewares])
-  );
+  const store = createStore(questionsReducer, bindMiddleware([...middlewares]));
 
   store.sagaTask = sagaMiddleware.run(rootSaga);
 

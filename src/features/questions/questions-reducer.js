@@ -1,14 +1,18 @@
 import cuid from 'cuid';
 import { combineReducers } from 'redux';
-import { isToday } from '../../lib/date';
 
 export const questionSuccess = payload => ({
   type: 'questions/questionSuccess',
   action: payload
 });
 
-export const reportSaveQuestionsError = error => ({
-  type: 'questions/reportSaveQuestionsError',
+export const toggleDarkModeSuccess = payload => ({
+  type: 'questions/toggleDarkModeSuccess',
+  action: payload
+});
+
+export const reportsaveStateError = error => ({
+  type: 'questions/reportsaveStateError',
   payload: error
 });
 
@@ -32,6 +36,16 @@ export const questionReceived = question => ({
   payload: question
 });
 
+export const filterQuestions = filter => ({
+  type: 'questions/filterQuestions',
+  payload: filter
+});
+
+export const toggleDarkMode = theme => ({
+  type: 'questions/toggleTheme',
+  payload: theme
+});
+
 export const createQuestion = ({
   askee = 'anonymous',
   status = 'unanswered',
@@ -43,37 +57,75 @@ export const createQuestion = ({
   payload: { askee, status, question, timestamp, id }
 });
 
-//SELECTORS----------------------------------//
 export const updateStatus = (id, status) => ({
   type: 'questions/updateStatus',
   payload: { id, status }
 });
 
 // as an object
-export const getQuestionsList = state => state.questions.byId;
-//SELECTORS----------------------------------//
 
+//SELECTORS----------------------------------//
+export const getState = state => state.questions;
+
+export const getQuestionsObj = state => state.questions.byId;
+
+export const getQuestionsArray = state => Object.values(state.questions.byId);
+
+export const getThemePreference = state => state.questions.darkMode;
 //Tests should be using selectors, so there's no need to change tests if the state shape changes.
 // as an array
-export const getQuestions = state => Object.values(state.questions.byId);
 
-export const getTodaysQuestions = state =>
-  getQuestions(state).map(q => {
-    if (isToday(q.timestamp)) {
-      return q;
-    }
-  });
+export const getQuestions = state =>
+  state.questions.filterBy === 'all'
+    ? getQuestionsArray(state)
+    : getQuestionsArray(state).filter(
+        q => q.status === state.questions.filterBy.toLowerCase()
+      );
 
-const byId = (state = {}, { type, payload } = {}) => {
+export const pointValues = {
+  accepted: 1,
+  rejected: 10,
+  unanswered: 0
+};
+
+export const calculateTotals = state => {
+  return getQuestionsArray(state).reduce(
+    (acc, question) => (acc += pointValues[question.status]),
+    0
+  );
+};
+
+//SELECTORS----------------------------------//
+
+const questions = (
+  state = { filterBy: 'all', byId: {}, darkMode: true },
+  { type, payload } = {}
+) => {
   switch (type) {
+    case toggleDarkMode().type:
+      return {
+        ...state,
+        darkMode: !state.darkMode
+      };
+    case filterQuestions().type:
+      return {
+        ...state,
+        filterBy: payload
+      };
     case questionsReceived().type:
       return { ...state, ...payload };
     case createQuestion().type:
-      return { ...state, [payload.id]: payload };
+      return {
+        ...state,
+        byId: { ...state.byId, [payload.id]: { ...payload } }
+      };
     case updateStatus().type:
       return {
         ...state,
-        [payload.id]: { ...state[payload.id], ...payload }
+        byId: {
+          ...state.byId,
+          [payload.id]: { ...state.byId[payload.id], ...payload }
+        }
       };
     default:
       return state;
@@ -81,7 +133,7 @@ const byId = (state = {}, { type, payload } = {}) => {
 };
 
 export const reducer = combineReducers({
-  byId
+  questions
 });
 
 export default reducer;
