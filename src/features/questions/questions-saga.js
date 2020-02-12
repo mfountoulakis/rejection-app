@@ -72,7 +72,7 @@ export function* watchToggleDarkMode() {
   yield takeEvery(toggleDarkMode().type, handleToggleDarkMode);
 }
 
-export default function* rootSaga() {
+export function* rootSaga() {
   yield all([
     watchToggleDarkMode(),
     watchCreateQuestion(),

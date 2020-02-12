@@ -20,7 +20,6 @@ const useStyles = makeStyles(theme => ({
   paper: {
     padding: theme.spacing(1),
     height: '100%',
-    position: 'fixed',
     overflow: 'hidden',
     width: '100%'
   }

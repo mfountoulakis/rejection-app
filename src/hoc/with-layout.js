@@ -1,9 +1,8 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { useState, useEffect } from 'react';
+
 import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
@@ -14,17 +13,19 @@ import { ThemeProvider } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
-const drawerWidth = 250;
 import ThumbsUpDownIcon from '@material-ui/icons/ThumbsUpDown';
 import PropTypes from 'prop-types';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import { useRouter } from 'next/router';
 import Button from '@material-ui/core/Button';
-import Switch from '@material-ui/core/Switch';
+import useFortmatic from '../components/use-fortmatic';
+import Nav from '../features/layout/nav';
+import { makeStyles } from '@material-ui/core/styles';
 
-import WbSunnyIcon from '@material-ui/icons/WbSunny';
-import Brightness3Icon from '@material-ui/icons/Brightness3';
+// import toolbar from './nav';
+
+const drawerWidth = 250;
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -52,9 +53,19 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Layout = Component => props => {
+const WithLayout = Component => props => {
   const classes = useStyles();
   const router = useRouter();
+
+  const { accounts, signIn, signOut } = useFortmatic(
+    'pk_test_794FC397BCA9DE65'
+  );
+
+  //usemapstatetoprops
+  useEffect(() => {
+    props.authStateChanged(accounts);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accounts]);
 
   const theme = createMuiTheme({
     palette: {
@@ -72,20 +83,14 @@ const Layout = Component => props => {
     <ThemeProvider theme={theme}>
       <div className={classes.root}>
         <CssBaseline />
-        <AppBar position="fixed" className={classes.appBar}>
-          <Toolbar>
-            <Typography variant="h6" noWrap className={classes.title}>
-              Rejection App
-            </Typography>
-            {props.darkMode ? <Brightness3Icon /> : <WbSunnyIcon />}
-            <Switch
-              label="Small"
-              checked={props.darkMode}
-              onChange={() => props.toggleDarkMode()}
-            />
-            <Button color="inherit">Login</Button>
-          </Toolbar>
-        </AppBar>
+        <Nav
+          drawerWidth={drawerWidth}
+          accounts={accounts}
+          signIn={signIn}
+          signOut={signOut}
+          toggleDarkMode={() => props.toggleDarkMode()}
+          {...props}
+        />
         <Drawer
           className={classes.drawer}
           variant="permanent"
@@ -140,10 +145,10 @@ const Layout = Component => props => {
   );
 };
 
-Layout.propTypes = {
+WithLayout.propTypes = {
   Component: PropTypes.object,
   filterQuestions: PropTypes.func,
   toggleTheme: PropTypes.func
 };
 
-export default Layout;
+export default WithLayout;
