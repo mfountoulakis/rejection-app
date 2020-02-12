@@ -1,4 +1,4 @@
-import Layout from '../features/layout/layout-component';
+import WithLayout from '../hoc/with-layout';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {
@@ -7,6 +7,7 @@ import {
   toggleDarkMode,
   getThemePreference
 } from '../features/questions/questions-reducer';
+import { authStateChanged } from '../features/accounts/accounts-reducer';
 import Questions from '../features/questions/index';
 import { compose } from 'redux';
 
@@ -21,7 +22,8 @@ const mapDispatchToProps = dispatch =>
     {
       createQuestion,
       filterQuestions,
-      toggleDarkMode
+      toggleDarkMode,
+      authStateChanged
     },
     dispatch
   );
@@ -29,6 +31,6 @@ const mapDispatchToProps = dispatch =>
 const connectedQuestions = connect(mapStateToProps, mapDispatchToProps);
 
 export const withQuestions = component =>
-  compose(connectedQuestions, Layout)(component);
+  compose(connectedQuestions, WithLayout)(component);
 
-export default compose(connectedQuestions, Layout)(Questions);
+export default compose(withQuestions)(Questions);

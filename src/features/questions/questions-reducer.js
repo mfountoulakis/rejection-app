@@ -1,5 +1,4 @@
 import cuid from 'cuid';
-import { combineReducers } from 'redux';
 
 export const questionSuccess = payload => ({
   type: 'questions/questionSuccess',
@@ -65,15 +64,13 @@ export const updateStatus = (id, status) => ({
 // as an object
 
 //SELECTORS----------------------------------//
-export const getState = state => state.questions;
+export const getState = state => state;
 
-export const getQuestionsObj = state => state.questions.byId;
+export const getQuestionsObj = state => state.byId;
 
 export const getQuestionsArray = state => Object.values(state.questions.byId);
 
 export const getThemePreference = state => state.questions.darkMode;
-//Tests should be using selectors, so there's no need to change tests if the state shape changes.
-// as an array
 
 export const getQuestions = state =>
   state.questions.filterBy === 'all'
@@ -94,10 +91,8 @@ export const calculateTotals = state => {
     0
   );
 };
-
 //SELECTORS----------------------------------//
-
-const questions = (
+export const reducer = (
   state = { filterBy: 'all', byId: {}, darkMode: true },
   { type, payload } = {}
 ) => {
@@ -113,7 +108,7 @@ const questions = (
         filterBy: payload
       };
     case questionsReceived().type:
-      return { ...state, ...payload };
+      return { ...state, ...payload.questions };
     case createQuestion().type:
       return {
         ...state,
@@ -131,9 +126,3 @@ const questions = (
       return state;
   }
 };
-
-export const reducer = combineReducers({
-  questions
-});
-
-export default reducer;
