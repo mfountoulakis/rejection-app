@@ -1,6 +1,6 @@
 # Rejection App
 
-This is a game based on rejection. Items with a rejected status are worth 10 points. An accepted status is worth 1 point.
+This is a game based on rejection. Items with a rejected status are worth 10 points. Items with an accepted status are worth 1 point.
 
 This app was based off of https://github.com/learn-javascript-courses/rejection
 
