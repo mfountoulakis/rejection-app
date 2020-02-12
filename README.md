@@ -22,4 +22,4 @@ FP in JS.
 
 ## Acknowledgments
 
-- [Eric Elliot](https://github.com/ericelliott 'Eric Elliot')
+- [Eric Elliott](https://github.com/ericelliott 'Eric Elliot')
