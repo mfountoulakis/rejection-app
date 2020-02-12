@@ -16,10 +16,10 @@ FP in JS.
 
 ## Built With
 
-- [React](https://reactjs.org/) - A JavaScript library for building user interfaces
-- [Redux](https://redux.js.org/) - A predictable state container for JavaScript apps
-- [Redux-Saga](https://redux-saga.js.org/) - Library used to isolate application side effects
+- [React](https://reactjs.org) - A JavaScript library for building user interfaces
+- [Redux](https://redux.js.org) - A predictable state container for JavaScript apps
+- [Redux-Saga](https://redux-saga.js.org) - Library used to isolate application side effects
 
 ## Acknowledgments
 
-- [Eric Elliott](https://github.com/ericelliott 'Eric Elliot'): https://devanywhere.io/, https://ericelliottjs.com/
+- [Eric Elliott](https://github.com/ericelliott 'Eric Elliot'): https://devanywhere.io, https://ericelliottjs.com
