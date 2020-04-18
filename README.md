@@ -62,11 +62,10 @@ Add an API to store data using a web service and database. Track multiple users 
 
 * Add mobile apps by turning your web app into a [Progressive Web Application](https://medium.com/javascript-scene/why-native-apps-really-are-doomed-native-apps-are-doomed-pt-2-e035b43170e9).
 
-
 ## To Implement:
-
 1. Fork this repo
 2. Implement your solution.
 3. Open an issue with a link to your fork.
 
 To get credit, you must [open an issue](https://github.com/learn-javascript-courses/rejection/issues/new?title=Challenge+completed+level:+basic/mid/advanced) with a link to your fork.
+
