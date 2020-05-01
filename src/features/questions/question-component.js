@@ -7,7 +7,6 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import { ListItem, ListItemAvatar, Avatar } from '@material-ui/core';
-// import StarIcon from '@material-ui/icons/Star';
 
 const Question = ({
   askee,
@@ -15,7 +14,8 @@ const Question = ({
   id,
   status,
   timestamp,
-  updateStatus
+  updateStatus,
+  account
 } = {}) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -35,7 +35,9 @@ const Question = ({
           <ListItemAvatar>
             <Avatar alt="Profile Picture" />
           </ListItemAvatar>
-          <span>Manos (Logged In User)</span>
+          <span>
+            {account ? 'authed account:' + ' ' + account : 'Anonymous'}
+          </span>
         </ListItem>
       </TableCell>
       <TableCell align="right">
@@ -86,6 +88,7 @@ const Question = ({
 
 Question.propTypes = {
   id: PropTypes.string,
+  account: PropTypes.string,
   question: PropTypes.string,
   status: PropTypes.string,
   askee: PropTypes.string,

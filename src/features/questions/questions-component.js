@@ -10,7 +10,13 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Question from './question-component';
 
-const Questions = ({ fetchQuestions, score, questions, updateStatus } = {}) => {
+const Questions = ({
+  fetchQuestions,
+  score,
+  questions,
+  updateStatus,
+  account
+} = {}) => {
   useEffect(() => {
     fetchQuestions();
   }, [fetchQuestions]);
@@ -37,6 +43,7 @@ const Questions = ({ fetchQuestions, score, questions, updateStatus } = {}) => {
             <TableRow className="question-row" key={q.id}>
               <Question
                 {...q}
+                account={account}
                 updateStatus={(id, status) => updateStatus(id, status)}
               />
             </TableRow>
@@ -48,6 +55,7 @@ const Questions = ({ fetchQuestions, score, questions, updateStatus } = {}) => {
 };
 
 Questions.propTypes = {
+  account: PropTypes.string,
   today: PropTypes.arrayOf(PropTypes.object),
   questions: PropTypes.array,
   fetchQuestions: PropTypes.func,

@@ -12,8 +12,11 @@ import {
   toggleTheme
 } from './questions-reducer';
 
+import { getWalletAddress } from '../accounts/accounts-reducer';
+
 const mapStateToProps = state => {
   return {
+    account: getWalletAddress(state),
     questions: getQuestions(state),
     score: calculateTotals(state)
   };

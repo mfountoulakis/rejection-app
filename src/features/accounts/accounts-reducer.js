@@ -3,6 +3,8 @@ export const authStateChanged = accounts => ({
   payload: accounts
 });
 
+export const getWalletAddress = ({ account }) => account.accounts[0];
+
 export const reducer = (state = { accounts: [] }, { type, payload }) => {
   switch (type) {
     case authStateChanged().type:
