@@ -35,9 +35,7 @@ const Question = ({
           <ListItemAvatar>
             <Avatar alt="Profile Picture" />
           </ListItemAvatar>
-          <span>
-            {account ? 'authed account:' + ' ' + account : 'Anonymous'}
-          </span>
+          <span>Anonymous</span>
         </ListItem>
       </TableCell>
       <TableCell align="right">
